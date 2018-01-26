@@ -1,0 +1,71 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="fluido-expansion-panel.html">
+
+<dom-module id="fluido-expansion-panels">
+<template>
+	<style>
+		:host {
+			display: block;
+		}
+	</style>
+
+	<slot></slot>
+
+</template>
+
+<script>
+	class FluidoExpansionPanels extends Polymer.Element {
+		static get is() { return "fluido-expansion-panels" }
+
+		static get properties() {
+			return {
+				accordion: {
+					type: Boolean,
+					value: false,
+					reflectToAttribute: true
+				}
+			}
+		}
+
+		connectedCallback() {
+			super.connectedCallback();
+			this._observer = new Polymer.FlattenedNodesObserver(this, info => {
+				let beforeNode = null
+				info.addedNodes.forEach(e => {
+					if(e.tagName && e.tagName.toLowerCase() == "fluido-expansion-panel") {
+						if(beforeNode) {
+							beforeNode.afterNode = e
+							e.beforeNode = beforeNode
+							e.index = beforeNode.index + 1
+						} else {
+							e.index = 0
+						}
+						e.accordionEvent = this._accordionEvent.bind(this)
+						beforeNode = e
+					}
+				})
+			})
+		}
+
+		disconnectedCallback() {
+			super.disconnectedCallback()
+			this._observer.disconnect()
+		}
+
+		_accordionEvent(panel, direction) {
+			if(this.accordion) {
+				if(panel.beforeNode && (!direction || direction === "left")) {
+					panel.beforeNode.set("expanded", false)
+					panel.beforeNode.accordionEvent(panel.beforeNode, "left")
+				}
+				if(panel.afterNode && (!direction || direction === "rigth")) {
+					panel.afterNode.set("expanded", false)
+					panel.afterNode.accordionEvent(panel.afterNode, "rigth")
+				}
+			}
+		}
+	}
+
+	window.customElements.define(FluidoExpansionPanels.is, FluidoExpansionPanels)
+</script>
+</dom-module>
