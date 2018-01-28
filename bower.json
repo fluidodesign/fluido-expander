@@ -1,6 +1,7 @@
 {
   "name": "fluido-expansion-panel",
   "description": "a expansion component",
+  "version": "0.1.3",
   "main": "fluido-expansion-panel.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
