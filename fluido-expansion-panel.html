@@ -210,15 +210,11 @@
 
 			toggleExpanded() {
 				this.expanded = !this.expanded
-			}
-
-			_checkExpandedState() {
-				this.expanded = !this.expanded
+				if (this.accordionEvent) this.accordionEvent(this)
 			}
 
 			_expandedObserver(expanded) {
 				this.icon = expanded ? "less" : "more"
-				if (this.accordionEvent) this.accordionEvent(this)
 				this.dispatchEvent(new CustomEvent("expanded", { detail: { expanded } }))
 			}
 
